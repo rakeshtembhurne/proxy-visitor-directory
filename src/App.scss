@@ -1,0 +1,111 @@
+$grey-dark: #232525;
+$grey-darker: #5c5856;
+$grey-normal: #b0b0b0;
+$grey-light: #e9ecee;
+$green: #1db65b;
+$red: #fa3350;
+$white: #f9f9f9;
+
+body {
+  font-size: 14px;
+  line-height: 20px;
+  color: $grey-darker;
+
+  & .caption {
+    line-height: 24px;
+  }
+  & .font-big {
+    font-size: 16px;
+    line-height: 24px;
+  }
+  & .font-bigger {
+    font-size: 18px;
+    line-height: 28px;
+  }
+  & .font-xl {
+    font-size: 20px;
+    line-height: 32px;
+  }
+}
+
+.bg-dark {
+  background-color: $grey-dark;
+  color: $white;
+}
+
+.color-dark {
+  color: $grey-dark;
+}
+.color-darker {
+  color: $grey-darker;
+}
+.color-grey {
+  color: $grey-normal;
+}
+.color-light {
+  color: $grey-light;
+}
+.color-green {
+  color: $green;
+}
+.color-red {
+  color: $red;
+}
+.color-white {
+  color: $white;
+}
+
+h1 {
+  font-size: 42px;
+  line-height: 50px;
+
+  &.dark {
+    color: $grey-dark;
+  }
+}
+
+h2 {
+  font-size: 30px;
+  line-height: 36px;
+
+  &.dark {
+    color: $grey-dark;
+  }
+}
+
+h3 {
+  &.xl {
+    font-size: 24px;
+    line-height: 30px;
+  }
+  &.dark {
+    font-size: 22px;
+    line-height: 32px;
+  }
+}
+
+h4 {
+  font-size: 20px;
+  line-height: 32px;
+}
+
+/* Grid System */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.grid-cell {
+  flex: 1;
+}
+
+.grid-cell-top {
+  align-self: flex-start;
+}
+
+.grid-cell-bottom {
+  align-self: flex-end;
+}

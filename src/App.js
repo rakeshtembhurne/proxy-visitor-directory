@@ -1,11 +1,14 @@
 import React from 'react';
-import './App.css';
+
+import Header from './components/header/header.component';
+
+import './App.scss';
 
 function App() {
   return (
-    <div className="">
-      <h1>Visitor Directory</h1>
-    </div>
+    <>
+      <Header />
+    </>
   );
 }
 
