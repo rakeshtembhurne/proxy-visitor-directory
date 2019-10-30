@@ -68,7 +68,7 @@ function VisitorLogs() {
   const filteredRows = getRows(rows, filters);
 
   return (
-    <div class="visitor-logs">
+    <div className="visitor-logs">
       <ReactDataGrid
         ref={setDataGridRef}
         columns={columns}
