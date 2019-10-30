@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDataGrid from 'react-data-grid';
+import { Data } from 'react-data-grid-addons';
 
 import './visitor-logs.styles.scss';
 
+const selectors = Data.Selectors;
 const defaultColumnProperties = {
   sortable: true,
   filterable: true,
@@ -16,42 +18,71 @@ const columns = [
   // { key: "visitor_check_in", name: "Checked In", editable: false }
 ].map(c => ({...c, ...defaultColumnProperties}));
 
-class VisitorLogs extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      columns: [],
-      logs: []
+const sortRows = (initialRows, sortColumn, sortDirection) => rows => {
+  const comparer = (a, b) => {
+    if (sortDirection === "ASC") {
+      return a[sortColumn] > b[sortColumn] ? 1 : -1;
+    } else if (sortDirection === "DESC") {
+      return a[sortColumn] < b[sortColumn] ? 1 : -1;
     }
-  }
-
-  async componentDidMount() {
-    const apiUrl =
-      "https://epic-gates-a1c2f8.netlify.com/.netlify/functions/getVisits?count=5";
-
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    this.setState(state => {
-      return {
-        ...state,
-        logs: data
-      }
-    })
-  }
-
-  render() {
-    return (
-      <div className="visitor-logs">
-        <ReactDataGrid
-          columns={columns}
-          rowGetter={i => this.state.logs[i]}
-          rowsCount={this.state.logs.length}
-          enableCellSelect={true}
-        />
-      </div>
-    );
-  }
-  
+  };
+  return sortDirection === "NONE" ? initialRows : [...rows].sort(comparer);
 };
+
+const handleFilterChange = filter => filters => {
+  const newFilters = { ...filters };
+  if (filter.filterTerm) {
+    newFilters[filter.column.key] = filter;
+  } else {
+    delete newFilters[filter.column.key];
+  }
+  return newFilters;
+};
+
+function getRows(rows, filters) {
+  return selectors.getRows({ rows, filters });
+}
+
+function VisitorLogs() {
+  const [filters, setFilters] = useState({});
+  const [rows, setRows] = useState([]);
+  const [dataGridRef, setDataGridRef] = useState(null);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const apiUrl =
+        "https://epic-gates-a1c2f8.netlify.com/.netlify/functions/getVisits?count=100";
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      setRows(data);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (dataGridRef && dataGridRef.onToggleFilter) {
+      dataGridRef.onToggleFilter();
+    }
+  }, [dataGridRef])
+  
+  const filteredRows = getRows(rows, filters);
+
+  return (
+    <div class="visitor-logs">
+      <ReactDataGrid
+        ref={setDataGridRef}
+        columns={columns}
+        rowGetter={i => filteredRows[i]}
+        rowsCount={filteredRows.length}
+        minHeight={500}
+        onAddFilter={filter => setFilters(handleFilterChange(filter))}
+        onClearFilters={() => setFilters({})}
+        onGridSort={(sortColumn, sortDirection) =>
+          setRows(sortRows(rows, sortColumn, sortDirection))
+        }
+      />
+    </div>
+  );
+}
 
 export default VisitorLogs;
